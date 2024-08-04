@@ -1,0 +1,96 @@
+#Naive Bayes
+import pandas as pd
+import numpy as np
+import random as rd
+
+data1={'age':['<=30','31-40','>40']}
+age=pd.DataFrame(data1)
+
+data2={"income":['L','M','H']}
+income=pd.DataFrame(data2)
+
+data3={'student':['Y','N']}
+student=pd.DataFrame(data3)
+
+data4={'credit_ranking':['F','E']}
+cr=pd.DataFrame(data4)
+
+data5={'buys_computer':['Y','N']}
+bc=pd.DataFrame(data5)
+
+def gen_info(n):
+    Age=rd.choices(age.age,k=n)
+    Income=rd.choices(income.income,k=n)
+    Student=rd.choices(student.student,k=n)
+    credit=rd.choices(cr.credit_ranking,k=n)
+    buys=rd.choices(bc.buys_computer,k=n)
+    dataset=pd.DataFrame({'Age':Age,'Income':Income,'Student':Student,'Credit':credit,'Buys_computer':buys})
+    return dataset
+
+cube=gen_info(50)
+print(cube)
+
+y_count=0
+n_count=0
+for i in range(50):
+    if cube.Buys_computer[i]=='Y':
+        y_count+=1
+    else:
+        n_count+=1
+prob_buys_computer_yes=y_count/50
+prob_buys_computer_no=n_count/50
+
+def age_prob(label,attribute):
+    count=0
+    for i in range(50):
+        if(cube.Buys_computer[i]==label and cube.Age[i]==attribute):
+            count+=1
+    if(label=='Y'):
+        prob=count/y_count
+    else:
+         prob=count/n_count
+    return prob
+
+def income_prob(label,attribute):
+    count=0
+    for i in range(50):
+        if(cube.Buys_computer[i]==label and cube.Income[i]==attribute):
+            count+=1
+    if(label=='Y'):
+        prob=count/y_count
+    else:
+        prob=count/n_count
+    return prob
+
+def student_prob(label,attribute):
+    count=0
+    for i in range(50):
+        if(cube.Buys_computer[i]==label and cube.Student[i]==attribute):
+            count+=1
+    if(label=='Y'):
+        prob=count/y_count
+    else:
+        prob=count/n_count
+    return prob
+
+def credit_prob(label,attribute):
+    count=0
+    for i in range(50):
+        if(cube.Buys_computer[i]==label and cube.Credit[i]==attribute):
+            count+=1
+    if(label=='Y'):
+        prob=count/y_count
+    else:
+        prob=count/n_count
+    return prob
+
+y_result=age_prob('Y','<=30') * income_prob('Y','M') * student_prob('Y','Y') * credit_prob('Y','F') * prob_buys_computer_yes
+print(y_result)
+
+n_result=age_prob('N','<=30') * income_prob('N','M') * student_prob('N','Y') * credit_prob('N','F') * prob_buys_computer_no
+print(n_result)
+
+if y_result<n_result:
+    print("Label: No")
+else:
+    print("Label: Yes")
